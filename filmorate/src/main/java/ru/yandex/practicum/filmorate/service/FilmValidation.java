@@ -16,13 +16,13 @@ import java.time.Month;
         if (film.getName() == null || film.getName().isBlank()) {
             log.warn("Название не может быть пустым");
             throw new ValidationException("Название не может быть пустым");
-        } else if (film.getDescription().length() >= MAX_LENGTH_DESCRIPTION){
+        } else if (film.getDescription().length() >= MAX_LENGTH_DESCRIPTION) {
             log.warn("Максимальная длина описания — 200 символов");
             throw new ValidationException("Максимальная длина описания — 200 символов");
         } else if (film.getReleaseDate() == null) {
             log.warn("Отсутствует дата релиза");
             throw new ValidationException("Отсутствует дата релиза");
-        }else if (film.getReleaseDate().isBefore(BEGINNING_OF_CINEMA)) {
+        } else if (film.getReleaseDate().isBefore(BEGINNING_OF_CINEMA)) {
             log.warn("Дата релиза не должна быть раньше 28 декабря 1895 года");
             throw new ValidationException("Дата релиза не должна быть раньше 28 декабря 1895 года");
         } else if (film.getDuration() <= 0) {

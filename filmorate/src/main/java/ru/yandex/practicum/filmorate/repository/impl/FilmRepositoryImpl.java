@@ -6,17 +6,17 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.repository.FilmRepository;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 @Slf4j
 @Repository
 public class FilmRepositoryImpl implements FilmRepository {
-    Integer idFilm = 1;
-    Map<Integer, Film> films = new HashMap<>();
+
+    private Integer idFilm = 1;
+    private final Map<Integer, Film> films = new HashMap<>();
 
     @Override
     public Film createFilm(Film film) {
@@ -28,7 +28,7 @@ public class FilmRepositoryImpl implements FilmRepository {
 
     @Override
     public Film updateFilm(Film film) {
-        if(films.containsKey(film.getId())) {
+        if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
             log.info("Фильм обновлен");
             return film;

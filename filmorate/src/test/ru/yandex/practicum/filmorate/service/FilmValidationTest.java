@@ -34,7 +34,7 @@ class FilmValidationTest {
     }
 
     @Test
-    void DescriptionLength200() {
+    void descriptionLength200() {
         String description = "DLaeCKMpYbgqpUVaDkguZTrEGyaimOCbwpQodQiBqvMQpBCVugmXRgbiIVH" +
                 "VJPtHWLGhuZKfPfbtIGRFvAkhXycnnFqKaXhYGKAKyWnThsTiOWIqOyjVnMehiVAfolCXCvdhkN" +
                 "okNZjUNaQuUwnEVOAEEotgAZeOvJVykxFiHrTPirvPKJFRepmApdMBWOuxpLQEYZV";
@@ -49,7 +49,7 @@ class FilmValidationTest {
     }
 
     @Test
-    void ReleaseDateAfterBeginningOfCinema() {
+    void releaseDateAfterBeginningOfCinema() {
         Film film = new Film(1, "name", "description", LocalDate.of(1895, Month.DECEMBER, 29), 123);
         FilmValidation.validationFilm(film);
     }
