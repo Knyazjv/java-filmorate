@@ -16,7 +16,7 @@ import java.time.Month;
         if (film.getName() == null || film.getName().isBlank()) {
             log.warn("Название не может быть пустым");
             throw new ValidationException("Название не может быть пустым");
-        } else if (film.getDescription().length() >= MAX_LENGTH_DESCRIPTION){
+        } else if (film.getDescription().length() >= MAX_LENGTH_DESCRIPTION) {
             log.warn("Максимальная длина описания — 200 символов");
             throw new ValidationException("Максимальная длина описания — 200 символов");
         } else if (film.getReleaseDate() == null) {
