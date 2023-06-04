@@ -28,7 +28,7 @@ public class FilmRepositoryImpl implements FilmRepository {
 
     @Override
     public Film updateFilm(Film film) {
-        if(films.containsKey(film.getId())) {
+        if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
             log.info("Фильм обновлен");
             return film;
