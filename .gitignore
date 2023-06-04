@@ -1,4 +1,4 @@
-*.class
+cd*.class
 *.log
 *.jar
 *.war
