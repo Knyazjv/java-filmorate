@@ -28,7 +28,7 @@ class UserValidationTest {
     }
 
     @Test
-    void IfTheNameIsEmpty() {
+    void ifTheNameIsEmpty() {
         User user = new User(1, "mail@yandex.ru", "login", "", LocalDate.now());
         UserValidation.validationUser(user);
         assertEquals("login", user.getName());
