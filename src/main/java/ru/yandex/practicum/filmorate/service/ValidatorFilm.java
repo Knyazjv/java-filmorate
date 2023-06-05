@@ -8,11 +8,11 @@ import java.time.LocalDate;
 import java.time.Month;
 
 @Slf4j
- public class FilmValidation {
+ public class ValidatorFilm {
     private static final LocalDate BEGINNING_OF_CINEMA = LocalDate.of(1895, Month.DECEMBER, 28);
     private static final int MAX_LENGTH_DESCRIPTION = 200;
 
-    public static void validationFilm(Film film) {
+    public static void validateFilm(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {
             log.warn("Название не может быть пустым");
             throw new ValidationException("Название не может быть пустым");

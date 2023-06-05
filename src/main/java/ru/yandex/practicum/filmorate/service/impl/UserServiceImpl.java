@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.repository.UserRepository;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.service.UserValidation;
+import ru.yandex.practicum.filmorate.service.ValidatorUser;
 
 import java.util.List;
 
@@ -20,13 +20,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User user) {
-        UserValidation.validationUser(user);
+        ValidatorUser.validateUser(user);
         return userRepository.createUser(user);
     }
 
     @Override
     public User update(User user) {
-        UserValidation.validationUser(user);
+        ValidatorUser.validateUser(user);
         return userRepository.updateUser(user);
     }
 

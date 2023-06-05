@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserValidationTest {
+class ValidatorUserTest {
 
     @Test
     void shouldThrowExceptionEmailIsEmptyAndContainAt() {
@@ -30,10 +30,10 @@ class UserValidationTest {
     @Test
     void ifTheNameIsEmpty() {
         User user = new User(1, "mail@yandex.ru", "login", "", LocalDate.now());
-        UserValidation.validationUser(user);
+        ValidatorUser.validateUser(user);
         assertEquals("login", user.getName());
         User user1 = new User(1, "mail@yandex.ru", "login", null, LocalDate.now());
-        UserValidation.validationUser(user1);
+        ValidatorUser.validateUser(user1);
         assertEquals("login", user1.getName());
     }
 
@@ -42,7 +42,7 @@ class UserValidationTest {
         User user = new User(1, "mail@yandex.ru", "login", "name", LocalDate.now().plusDays(1));
         assertEquals("Дата рождения не может быть в будущем", validation(user).getMessage());
         User user1 = new User(1, "mail@yandex.ru", "login", "name", LocalDate.now());
-        UserValidation.validationUser(user1);
+        ValidatorUser.validateUser(user1);
     }
 
     private ValidationException validation(User user) {
@@ -51,7 +51,7 @@ class UserValidationTest {
                 new Executable() {
                     @Override
                     public void execute() {
-                        UserValidation.validationUser(user);
+                        ValidatorUser.validateUser(user);
                     }
                 });
     }

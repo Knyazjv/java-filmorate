@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.ValidatorFilm;
 
 
 import java.time.LocalDate;
@@ -11,7 +12,7 @@ import java.time.Month;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FilmValidationTest {
+class ValidatorFilmTest {
     @Test
     void shouldThrowExceptionNameFilmIsEmpty() {
         Film film = new Film(1, "", "description", LocalDate.now(), 123);
@@ -39,7 +40,7 @@ class FilmValidationTest {
                 "VJPtHWLGhuZKfPfbtIGRFvAkhXycnnFqKaXhYGKAKyWnThsTiOWIqOyjVnMehiVAfolCXCvdhkN" +
                 "okNZjUNaQuUwnEVOAEEotgAZeOvJVykxFiHrTPirvPKJFRepmApdMBWOuxpLQEYZV";
         Film film = new Film(1, "name", description, LocalDate.now(), 123);
-        FilmValidation.validationFilm(film);
+        ValidatorFilm.validateFilm(film);
     }
 
     @Test
@@ -51,7 +52,7 @@ class FilmValidationTest {
     @Test
     void releaseDateAfterBeginningOfCinema() {
         Film film = new Film(1, "name", "description", LocalDate.of(1895, Month.DECEMBER, 29), 123);
-        FilmValidation.validationFilm(film);
+        ValidatorFilm.validateFilm(film);
     }
 
     @Test
@@ -68,7 +69,7 @@ class FilmValidationTest {
                 new Executable() {
                     @Override
                     public void execute() {
-                        FilmValidation.validationFilm(film);
+                        ValidatorFilm.validateFilm(film);
                     }
                 });
     }

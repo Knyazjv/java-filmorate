@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.repository.FilmRepository;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.service.FilmValidation;
+import ru.yandex.practicum.filmorate.service.ValidatorFilm;
 
 import java.util.List;
 
@@ -20,13 +20,13 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public Film create(Film film) {
-        FilmValidation.validationFilm(film);
+        ValidatorFilm.validateFilm(film);
         return filmRepository.createFilm(film);
     }
 
     @Override
     public Film update(Film film) {
-        FilmValidation.validationFilm(film);
+        ValidatorFilm.validateFilm(film);
         return filmRepository.updateFilm(film);
     }
 
