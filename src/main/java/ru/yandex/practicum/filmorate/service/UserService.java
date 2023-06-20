@@ -10,4 +10,14 @@ public interface UserService {
     User update(User user);
 
     List<User> getUsers();
+
+    User getUserById(Long userId);
+
+    void addFriend(Long userId, Long friendId);
+
+    void deleteFriend(Long userId, Long friendId);
+
+    List<User> getFriend(Long userId);
+
+    List<User> getListOfMutualFriends(Long userId, Long otherId);
 }
