@@ -90,7 +90,7 @@ public class InMemoryUserService implements UserService {
         if (user == null || otherUser == null) throw new NotFoundException("Пользователь не найден");
         List<Long> idMutualFriends = userRepository.getListOfMutualFriends(userId, otherId);
         if (idMutualFriends == null) return mutualFriends;
-        if (!idMutualFriends.isEmpty() ) {
+        if (!idMutualFriends.isEmpty()) {
             for (Long idMutualFriend : userRepository.getListOfMutualFriends(userId, otherId)) {
                 user = userRepository.getUserById(idMutualFriend);
                 if (user != null) mutualFriends.add(user);
