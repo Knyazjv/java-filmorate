@@ -13,9 +13,9 @@ import java.util.*;
 @Repository
 public class InMemoryUserStorage implements UserStorage {
 
-    private Long idUser = 1L;
     private final Map<Long, User> users = new HashMap<>();
     private final Map<Long, Set<Long>> userFriendIds = new HashMap<>();
+    private Long idUser = 1L;
 
     @Override
     public User createUser(User user) {
@@ -42,12 +42,12 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUserById(Long userId) {
-         return users.getOrDefault(userId, null);
+        return users.getOrDefault(userId, null);
     }
 
     @Override
     public void addFriend(Long userId, Long friendId) {
-        addFriendId(userId,friendId);
+        addFriendId(userId, friendId);
         addFriendId(friendId, userId);
     }
 
@@ -78,17 +78,17 @@ public class InMemoryUserStorage implements UserStorage {
         return new ArrayList<>(mutualIds);
     }
 
-    private void addFriendId (Long userId, Long otherId) {
+    private void addFriendId(Long userId, Long otherId) {
         Set<Long> friends;
         if (userFriendIds.containsKey(userId)) {
             friends = new HashSet<>(userFriendIds.get(userId));
             friends.add(otherId);
         } else {
-                friends = new HashSet<>();
-                friends.add(otherId);
-            }
-        userFriendIds.put(userId, friends);
+            friends = new HashSet<>();
+            friends.add(otherId);
         }
+        userFriendIds.put(userId, friends);
+    }
 
     private void deleteFriendId(Long userId, Long otherId) {
         Set<Long> friends;
