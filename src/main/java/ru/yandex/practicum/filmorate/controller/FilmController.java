@@ -11,7 +11,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/films")
 public class FilmController {
-    private final int DEFAULT_COUNT_FILM = 10;
 
     private final FilmService filmService;
 
@@ -52,7 +51,8 @@ public class FilmController {
 
    @GetMapping(value = "/popular")
     private List<Film> getPopularFilm(@RequestParam(required = false, value = "count") Optional<Integer> count) {
-        if (count.isEmpty() || count.get() <= 0) return filmService.getPopularFilm(DEFAULT_COUNT_FILM);
+       int defaultCountFilm = 10;
+       if (count.isEmpty() || count.get() <= 0) return filmService.getPopularFilm(defaultCountFilm);
         return filmService.getPopularFilm(count.get());
    }
 }
