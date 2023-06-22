@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -10,11 +11,12 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
+@Slf4j
 public class InMemoryUserService implements UserService {
-
     private final UserStorage userRepository;
 
     @Autowired
@@ -31,10 +33,7 @@ public class InMemoryUserService implements UserService {
     @Override
     public User update(User user) {
         ValidatorUser.validateUser(user);
-        if (userRepository.getUserById(user.getId()) == null) {
-            throw new NotFoundException("Пользователь отсутствует");
-        }
-
+        validatorId(user.getId());
         return userRepository.updateUser(user);
     }
 
@@ -45,35 +44,30 @@ public class InMemoryUserService implements UserService {
 
     @Override
     public User getUserById(Long userId) {
-        User user = userRepository.getUserById(userId);
-        if (user == null) throw new NotFoundException("Пользователь с id:" + userId + " отсутствует");
-        return user;
+        validatorId(userId);
+        return userRepository.getUserById(userId);
     }
 
     @Override
     public void addFriend(Long userId, Long friendId) {
-        User user = userRepository.getUserById(userId);
-        User friend = userRepository.getUserById(friendId);
-        if (user == null || friend == null) {
-            throw new NotFoundException("Пользователь отсутствует");
-        }
+        validatorId(userId);
+        validatorId(friendId);
         userRepository.addFriend(userId, friendId);
     }
 
     @Override
     public void deleteFriend(Long userId, Long friendId) {
-        if (userRepository.getUserById(userId) == null || userRepository.getUserById(friendId) == null) {
-            throw new NotFoundException("Пользователь отсутствует");
-        } else {
-            userRepository.deleteFriend(userId, friendId);
-        }
+        validatorId(userId);
+        validatorId(friendId);
+        userRepository.deleteFriend(userId, friendId);
     }
 
     @Override
     public List<User> getFriend(Long userId) {
+        User user;
         List<User> friends = new ArrayList<>();
-        User user = userRepository.getUserById(userId);
-        if (user == null) throw new NotFoundException("Пользователь с id:" + userId + " отсутствует");
+
+        validatorId(userId);
         List<Long> friendIds = userRepository.getFriends(userId);
         for (Long idFriend : friendIds) {
             user = userRepository.getUserById(idFriend);
@@ -84,18 +78,19 @@ public class InMemoryUserService implements UserService {
 
     @Override
     public List<User> getListOfMutualFriends(Long userId, Long otherId) {
-        List<User> mutualFriends = new ArrayList<>();
+        validatorId(userId);
+        validatorId(otherId);
+        return userRepository.getListOfMutualFriends(userId, otherId).stream()
+                .map(userRepository::getUserById)
+                .collect(Collectors.toList());
+    }
+
+    private void validatorId(Long userId) {
         User user = userRepository.getUserById(userId);
-        User otherUser = userRepository.getUserById(otherId);
-        if (user == null || otherUser == null) throw new NotFoundException("Пользователь не найден");
-        List<Long> idMutualFriends = userRepository.getListOfMutualFriends(userId, otherId);
-        if (idMutualFriends == null) return mutualFriends;
-        if (!idMutualFriends.isEmpty()) {
-            for (Long idMutualFriend : userRepository.getListOfMutualFriends(userId, otherId)) {
-                user = userRepository.getUserById(idMutualFriend);
-                if (user != null) mutualFriends.add(user);
-            }
+        if (user == null) {
+            log.warn("Error");
+            log.warn("userId: " + userId);
+            throw new NotFoundException("Пользователь не найден");
         }
-        return mutualFriends;
     }
 }

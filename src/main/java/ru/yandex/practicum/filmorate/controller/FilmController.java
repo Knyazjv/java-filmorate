@@ -20,39 +20,38 @@ public class FilmController {
     }
 
     @PostMapping
-    private Film add(@RequestBody Film film) {
+    public Film add(@RequestBody Film film) {
         return filmService.create(film);
     }
 
     @PutMapping
-    private Film update(@RequestBody Film film) {
+    public Film update(@RequestBody Film film) {
         return filmService.update(film);
     }
 
     @GetMapping
-    private List<Film> getFilms() {
+    public List<Film> getFilms() {
         return filmService.getFilms();
     }
 
-   @GetMapping(value = "/{id}")
-   private Film getFilmById(@PathVariable(value = "id") Long idFilm) {
-       return filmService.getFilmById(idFilm);
-   }
-
-   @PutMapping(value = "/{id}/like/{userId}")
-    private void putLike(@PathVariable("id") Long filmId, @PathVariable Long userId) {
-        filmService.putLike(filmId,userId);
-   }
-
-    @DeleteMapping(value = "{id}/like/{userId}")
-    private void deleteLike(@PathVariable("id") Long filmId, @PathVariable Long userId) {
-        filmService.deleteLike(filmId, userId);
+    @GetMapping(value = "/{filmId}")
+    public Film getFilmById(@PathVariable Long filmId) {
+        return filmService.getFilmById(filmId);
     }
 
-   @GetMapping(value = "/popular")
-    private List<Film> getPopularFilm(@RequestParam(required = false, value = "count") Optional<Integer> count) {
-       int defaultCountFilm = 10;
-       if (count.isEmpty() || count.get() <= 0) return filmService.getPopularFilm(defaultCountFilm);
-        return filmService.getPopularFilm(count.get());
-   }
+    @PutMapping(value = "/{filmId}/like/{userId}")
+    public void addLike(@PathVariable Long filmId, @PathVariable Long userId) {
+        filmService.addLike(filmId, userId);
+    }
+
+    @DeleteMapping(value = "{filmId}/like/{userId}")
+    public void removeLike(@PathVariable Long filmId, @PathVariable Long userId) {
+        filmService.removeLike(filmId, userId);
+    }
+
+    @GetMapping(value = "/popular")
+    public List<Film> getPopularFilm(@RequestParam(required = false, value = "count") Optional<Integer> count) {
+        int defaultCountFilm = 10;
+        return filmService.getPopularFilm(count.filter(c -> c > 0).orElse(defaultCountFilm));
+    }
 }

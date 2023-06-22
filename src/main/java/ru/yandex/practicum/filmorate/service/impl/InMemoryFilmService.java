@@ -1,19 +1,22 @@
 package ru.yandex.practicum.filmorate.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.ValidatorFilm;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
+@Slf4j
 public class InMemoryFilmService implements FilmService {
 
     private final FilmStorage filmStorage;
@@ -51,30 +54,36 @@ public class InMemoryFilmService implements FilmService {
     }
 
     @Override
-    public void putLike(Long filmId, Long userId) {
+    public void addLike(Long filmId, Long userId) {
         validatorId(filmId, userId);
-        filmStorage.putLike(filmId, userId);
+        filmStorage.addLike(filmId, userId);
     }
 
     @Override
-    public void deleteLike(Long filmId, Long userId) {
+    public void removeLike(Long filmId, Long userId) {
         validatorId(filmId, userId);
-        filmStorage.deleteLike(filmId, userId);
+        filmStorage.removeLike(filmId, userId);
     }
 
     @Override
     public List<Film> getPopularFilm(Integer count) {
-        List<Film> popularFilms = new ArrayList<>();
-        List<Long> idPopularFilms = filmStorage.getPopularFilm(count);
-        if (idPopularFilms.isEmpty()) return popularFilms;
-        for (Long idFilm : idPopularFilms) {
-            popularFilms.add(filmStorage.getFilmById(idFilm));
-        }
-        return popularFilms;
+        return filmStorage.getPopularFilm(count).stream()
+                .map(filmStorage::getFilmById)
+                .collect(Collectors.toList());
     }
 
     private void validatorId(Long filmId, Long userId) {
-        if (userStorage.getUserById(userId) == null) throw new NotFoundException("Пользователь отсутствует");
-        if (filmStorage.getFilmById(filmId) == null) throw new NotFoundException("Отсутствует фильм");
+        User user = userStorage.getUserById(userId);
+        if (user == null) {
+            log.warn("Error");
+            log.warn("userId: " + userId);
+            throw new NotFoundException("Пользователь отсутствует");
+        }
+        Film film = filmStorage.getFilmById(filmId);
+        if (film == null) {
+            log.warn("Error");
+            log.warn("filmId: " + filmId);
+            throw new NotFoundException("Отсутствует фильм");
+        }
     }
 }

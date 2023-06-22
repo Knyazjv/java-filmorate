@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -20,6 +21,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User createUser(User user) {
         user.setId(idUser);
+        userFriendIds.put(idUser, new HashSet<>());
         users.put(idUser++, user);
         log.info("Пользователь успешно добавлен");
         return user;
@@ -68,14 +70,9 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public List<Long> getListOfMutualFriends(Long userId, Long otherId) {
         if (userFriendIds.isEmpty()) return null;
-        Set<Long> userIds = userFriendIds.get(userId);
-        Set<Long> otherIds = userFriendIds.get(otherId);
-        if (userIds == null || otherIds == null) return null;
-        List<Long> mutualIds = new ArrayList<>();
-        for (Long idMutual : userIds) {
-            if (otherIds.contains(idMutual)) mutualIds.add(idMutual);
-        }
-        return new ArrayList<>(mutualIds);
+        return userFriendIds.get(userId).stream()
+                .filter(userFriendIds.get(otherId)::contains)
+                .collect(Collectors.toList());
     }
 
     private void addFriendId(Long userId, Long otherId) {
