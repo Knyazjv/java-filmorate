@@ -13,11 +13,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ValidatorFilmTest {
-    private final String THE_NAME_CANNOT_BE_EMPTY = "Название не может быть пустым";
-    private final String DURATION_OF_THE_FILM_IS_POSITIVE = "Продолжительность фильма должна быть положительной";
-    private final String DATE_BEFORE_BEGINNING_OF_CINEMA = "Дата релиза не должна быть раньше 28 декабря 1895 года";
-    private final String MAX_DESCRIPTION = "Максимальная длина описания — 200 символов";
-    private final String DESCRIPTION_LENGTH_200 = "DLaeCKMpYbgqpUVaDkguZTrEGyaimOCbwpQodQiBqvMQpBCVugmXRgbiIVH" +
+    private static final String THE_NAME_CANNOT_BE_EMPTY = "Название не может быть пустым";
+    private static final String DURATION_OF_THE_FILM_IS_POSITIVE = "Продолжительность фильма должна быть положительной";
+    private static final String DATE_BEFORE_BEGINNING_OF_CINEMA = "Дата релиза не должна быть раньше 28 декабря 1895 года";
+    private static final String MAX_DESCRIPTION = "Максимальная длина описания — 200 символов";
+    private static final String DESCRIPTION_LENGTH_200 = "DLaeCKMpYbgqpUVaDkguZTrEGyaimOCbwpQodQiBqvMQpBCVugmXRgbiIVH" +
             "VJPtHWLGhuZKfPfbtIGRFvAkhXycnnFqKaXhYGKAKyWnThsTiOWIqOyjVnMehiVAfolCXCvdhkN" +
             "okNZjUNaQuUwnEVOAEEotgAZeOvJVykxFiHrTPirvPKJFRepmApdMBWOuxpLQEYZV";
 

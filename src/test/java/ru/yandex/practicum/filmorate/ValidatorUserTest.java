@@ -12,9 +12,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ValidatorUserTest {
-    private final String EMAIL_CANNOT_BE_EMPTY = "Электронная почта не может быть пустой и должна содержать символ @";
-    private final String LOGIN_CANNOT_BE_EMPTY = "Логин не может быть пустым и содержать пробелы";
-    private final String BIRTHDAY_CANNOT_BE_IN_THE_FUTURE = "Дата рождения не может быть в будущем";
+    private static final String EMAIL_CANNOT_BE_EMPTY = "Электронная почта не может быть пустой и должна содержать символ @";
+    private static final String LOGIN_CANNOT_BE_EMPTY = "Логин не может быть пустым и содержать пробелы";
+    private static final String BIRTHDAY_CANNOT_BE_IN_THE_FUTURE = "Дата рождения не может быть в будущем";
 
     @Test
     void shouldThrowExceptionEmailIsEmptyAndContainAt() {
