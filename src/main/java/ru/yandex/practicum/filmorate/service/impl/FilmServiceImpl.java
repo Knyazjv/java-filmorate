@@ -12,19 +12,18 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
 @Slf4j
-public class InMemoryFilmService implements FilmService {
+public class FilmServiceImpl implements FilmService {
 
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
 
 
     @Autowired
-    public InMemoryFilmService(FilmStorage filmStorage, UserStorage userStorage) {
+    public FilmServiceImpl(FilmStorage filmStorage, UserStorage userStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
     }
@@ -38,6 +37,7 @@ public class InMemoryFilmService implements FilmService {
     @Override
     public Film update(Film film) {
         ValidatorFilm.validateFilm(film);
+        getFilmById(film.getId());
         return filmStorage.updateFilm(film);
     }
 
@@ -49,7 +49,7 @@ public class InMemoryFilmService implements FilmService {
     @Override
     public Film getFilmById(Long filmId) {
         Film film = filmStorage.getFilmById(filmId);
-        if (film == null) throw new NotFoundException("Фильм по id: " + filmId + "не найден");
+        if (film == null) throw new NotFoundException("Фильм по id: " + filmId + " не найден");
         return film;
     }
 
@@ -67,9 +67,7 @@ public class InMemoryFilmService implements FilmService {
 
     @Override
     public List<Film> getPopularFilm(Integer count) {
-        return filmStorage.getPopularFilm(count).stream()
-                .map(filmStorage::getFilmById)
-                .collect(Collectors.toList());
+        return filmStorage.getPopularFilm(count);
     }
 
     private void validatorId(Long filmId, Long userId) {
