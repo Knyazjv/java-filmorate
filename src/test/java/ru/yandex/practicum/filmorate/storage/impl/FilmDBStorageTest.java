@@ -26,10 +26,10 @@ class FilmDBStorageTest {
     @Test
     void testCreateFilm() {
         Set<Genre> genres = new HashSet<>();
-        genres.add(new Genre(3,null));
+        genres.add(new Genre(3L,null));
         Film film = new Film(0L, "testName", "testDescription",
                 LocalDate.of(2000, 1, 1),
-                100, new Mpa(2, null), genres);
+                100, new Mpa(2L, null), genres);
         Film film2 = filmStorage.createFilm(film);
         equalsFilm(5, "testName", "testDescription", LocalDate.of(2000, 1, 1),
                 100, 2, film2);
@@ -43,14 +43,14 @@ class FilmDBStorageTest {
     @Test
     void testUpdateFilm() {
         Set<Genre> genres = new HashSet<>();
-        genres.add(new Genre(2,null));
+        genres.add(new Genre(2L,null));
         Film film = filmStorage.getFilmById(2L);
         equalsFilm(2, "StarWars", "description2", LocalDate.of(1977, 5, 25),
                 121, 5, film);
         equalsGenre(2, genres);
         film = new Film(2L, "testName", "testDescription",
                 LocalDate.of(2000, 1, 1),
-                100, new Mpa(2, null), genres);
+                100, new Mpa(2L, null), genres);
         filmStorage.updateFilm(film);
         equalsFilm(2, "testName", "testDescription", LocalDate.of(2000, 1, 1),
                 100, 2, film);
