@@ -104,7 +104,7 @@ public class FilmServiceImpl implements FilmService {
         List<Long> genreIds = genres.stream().map(Genre::getId).collect(Collectors.toList());
         List<Long> baseGenreIds = genreStorage.getAllGenre().stream().map(Genre::getId).collect(Collectors.toList());
         for (Long genreId : genreIds) {
-            if(!baseGenreIds.contains(genreId)) {
+            if (!baseGenreIds.contains(genreId)) {
                 log.warn("Error");
                 log.warn("genreId= " + genreId + " not found");
                 throw new NotFoundException("Жанр не найден");
@@ -115,7 +115,7 @@ public class FilmServiceImpl implements FilmService {
     private void validateMpa(Long mpaId) {
         List<Mpa> mpaList = mpaStorage.getAllMpa();
         for (Mpa mpa : mpaList) {
-            if(mpa.getId() == mpaId) return;
+            if (mpa.getId() == mpaId) return;
         }
         log.warn("Error");
         log.warn("genreId= " + mpaId + " not found");
