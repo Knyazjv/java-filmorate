@@ -1,24 +1,23 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @Repository
@@ -77,7 +76,8 @@ public class FilmDBStorage implements FilmStorage {
                 "right join FILM_GENRE as FG on FG.GENRE_ID = G.GENRE_ID " +
                 "where FG.FILM_ID = :filmId";
         final List<Genre> genres = jdbcOperations.query(sqlGenreQuery,
-                Map.of("filmId", filmId), new GenreRowMapper());
+                Map.of("filmId", filmId), (rs, roNum) -> new Genre(rs.getLong("GENRE_ID"),
+                rs.getString("GENRE_NAME")));
         Film film = films.get(0);
         film.setGenres(new TreeSet<>((o1, o2) -> (int) (o1.getId() - o2.getId())));
         film.getGenres().addAll(genres);
@@ -119,7 +119,7 @@ public class FilmDBStorage implements FilmStorage {
         map.addValue("releaseDate", film.getReleaseDate());
         map.addValue("duration", film.getDuration());
         map.addValue("mpaId", film.getMpa().getId());
-        if(!isCreate) map.addValue("filmId", film.getId());
+        if (!isCreate) map.addValue("filmId", film.getId());
         return map;
     }
 
@@ -145,7 +145,7 @@ public class FilmDBStorage implements FilmStorage {
     private void loadFilmsGenre(List<Film> films) {
         List<Long> filmsId = films.stream().map(Film::getId).collect(Collectors.toList());
         final Map<Long, Film> filmMap = films.stream()
-				.collect(Collectors.toMap(Film::getId, film -> film, (a, b) -> b));
+                .collect(Collectors.toMap(Film::getId, film -> film, (a, b) -> b));
         final String sqlQuery = "select FG.FILM_ID, FG.GENRE_ID, G.GENRE_NAME " +
                 "FROM FILM_GENRE as FG " +
                 "left join GENRE as G on FG.GENRE_ID = G.GENRE_ID " +
@@ -189,15 +189,7 @@ public class FilmDBStorage implements FilmStorage {
         }
     }
 
-    private static class GenreRowMapper implements RowMapper<Genre> {
-        @Override
-        public Genre mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new Genre(rs.getLong("GENRE_ID"),
-                    rs.getString("GENRE_NAME"));
-        }
-    }
-
-    private  static class FilmGenreRowMapper implements RowMapper<FilmGenre> {
+    private static class FilmGenreRowMapper implements RowMapper<FilmGenre> {
         @Override
         public FilmGenre mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new FilmGenre(rs.getLong("FILM_ID"),

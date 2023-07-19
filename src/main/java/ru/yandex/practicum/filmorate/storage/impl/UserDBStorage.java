@@ -83,7 +83,7 @@ public class UserDBStorage implements UserStorage {
         final String sqlQuery = "select USER_ID, LOGIN, BIRTHDAY, EMAIL, USER_NAME " +
                 "from USERS where USER_ID in " +
                 "(select FRIEND_ID " +
-                    "from STATUS_FRIEND where USER_ID = :userId)";
+                "from STATUS_FRIEND where USER_ID = :userId)";
         return jdbcOperations.query(sqlQuery, Map.of("userId", userId), new UserRowMapper());
     }
 
@@ -92,9 +92,9 @@ public class UserDBStorage implements UserStorage {
         final String sqlQuery = "select USER_ID, LOGIN, BIRTHDAY, EMAIL, USER_NAME " +
                 "from USERS where USER_ID in " +
                 "(select SF1.FRIEND_ID " +
-                    "from STATUS_FRIEND as SF1 " +
-                    "inner join STATUS_FRIEND as SF2 on SF1.FRIEND_ID = SF2.FRIEND_ID " +
-                    "where SF1.USER_ID = :userId and SF2.USER_ID = :otherId)";
+                "from STATUS_FRIEND as SF1 " +
+                "inner join STATUS_FRIEND as SF2 on SF1.FRIEND_ID = SF2.FRIEND_ID " +
+                "where SF1.USER_ID = :userId and SF2.USER_ID = :otherId)";
         return jdbcOperations.query(sqlQuery,
                 Map.of("userId", userId, "otherId", otherId),
                 new UserRowMapper());

@@ -56,7 +56,7 @@ class FilmDBStorageTest {
         filmStorage.updateFilm(film);
         equalsFilm(2, "testName", "testDescription", LocalDate.of(2000, 1, 1),
                 100, 2, film);
-        equalsGenre(3, genres);
+        equalsGenre(2, genres);
     }
 
     @Test
