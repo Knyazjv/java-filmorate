@@ -15,8 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @JdbcTest
 @Import(UserDBStorage.class)
 class UserDBStorageTest {
+
     @Autowired
     private UserStorage userStorage;
+
     @Test
     void testCreateUser() {
         User user = new User(0L, "emailTest@mail.ru", "loginTest",

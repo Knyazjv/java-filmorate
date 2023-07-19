@@ -18,6 +18,7 @@ class MpaDBStorageTest {
 
     @Autowired
     private MpaStorage mpaStorage;
+
     @Test
     void getAllMpa() {
         List<String> names = new ArrayList<>();
@@ -26,7 +27,7 @@ class MpaDBStorageTest {
         names.add("PG-13");
         names.add("R");
         names.add("NC-17");
-        List<Mpa> mpaList =mpaStorage.getAllMpa();
+        List<Mpa> mpaList = mpaStorage.getAllMpa();
         for (int i = 0; i < names.size(); i++) {
             equalsMpa(i + 1, names.get(i), mpaList.get(i));
         }
