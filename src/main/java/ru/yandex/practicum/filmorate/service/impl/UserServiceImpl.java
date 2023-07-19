@@ -76,8 +76,7 @@ public class UserServiceImpl implements UserService {
     private void validatorId(Long userId) {
         User user = userRepository.getUserById(userId);
         if (user == null) {
-            log.warn("Error");
-            log.warn("userId: " + userId);
+            log.warn("userId={} не найден", userId);
             throw new NotFoundException("Пользователь не найден");
         }
     }

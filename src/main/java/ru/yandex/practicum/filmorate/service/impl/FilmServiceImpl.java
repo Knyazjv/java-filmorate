@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
@@ -87,14 +88,12 @@ public class FilmServiceImpl implements FilmService {
     private void validatorId(Long filmId, Long userId) {
         User user = userStorage.getUserById(userId);
         if (user == null) {
-            log.warn("Error");
-            log.warn("userId: " + userId);
+            log.warn("userId={} не найден", userId);
             throw new NotFoundException("Пользователь отсутствует");
         }
         Film film = filmStorage.getFilmById(filmId);
         if (film == null) {
-            log.warn("Error");
-            log.warn("filmId: " + filmId);
+            log.warn("filmId={} не найден", userId);
             throw new NotFoundException("Отсутствует фильм");
         }
     }
@@ -105,8 +104,7 @@ public class FilmServiceImpl implements FilmService {
         List<Long> baseGenreIds = genreStorage.getAllGenre().stream().map(Genre::getId).collect(Collectors.toList());
         for (Long genreId : genreIds) {
             if (!baseGenreIds.contains(genreId)) {
-                log.warn("Error");
-                log.warn("genreId= " + genreId + " not found");
+                log.warn("genreId={} не найден", genreId);
                 throw new NotFoundException("Жанр не найден");
             }
         }
@@ -117,8 +115,7 @@ public class FilmServiceImpl implements FilmService {
         for (Mpa mpa : mpaList) {
             if (mpa.getId() == mpaId) return;
         }
-        log.warn("Error");
-        log.warn("genreId= " + mpaId + " not found");
-        throw new NotFoundException("Рэйтинг не найден");
+        log.warn("genreId={} не найден", mpaId);
+        throw new NotFoundException("Рейтинг не найден");
     }
 }

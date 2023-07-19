@@ -22,7 +22,10 @@ import java.util.stream.Collectors;
 
 @Repository
 public class FilmDBStorage implements FilmStorage {
+
     private final NamedParameterJdbcOperations jdbcOperations;
+    private final FilmRowMapper filmRowMapper = new FilmRowMapper();
+    private final FilmGenreRowMapper filmGenreRowMapper = new FilmGenreRowMapper();
 
     public FilmDBStorage(NamedParameterJdbcOperations jdbcOperations) {
         this.jdbcOperations = jdbcOperations;
@@ -30,7 +33,7 @@ public class FilmDBStorage implements FilmStorage {
 
     @Override
     public Film createFilm(Film film) {
-        String sqlQuery = "insert into FILMS (FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID) " +
+        final String sqlQuery = "insert into FILMS (FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID) " +
                 "values (:name, :description, :releaseDate, :duration, :mpaId);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcOperations.update(sqlQuery, getMapParameter(film, true), keyHolder);
@@ -42,7 +45,7 @@ public class FilmDBStorage implements FilmStorage {
     @Override
     public Film updateFilm(Film film) {
         if (getFilmById(film.getId()) == null) return null;
-        String sqlQuery = "update FILMS SET FILM_NAME = :name, DESCRIPTION = :description, " +
+        final String sqlQuery = "update FILMS SET FILM_NAME = :name, DESCRIPTION = :description, " +
                 "RELEASE_DATE = :releaseDate, DURATION = :duration, MPA_ID = :mpaId " +
                 "where FILM_ID = :filmId";
         jdbcOperations.update(sqlQuery, getMapParameter(film, false));
@@ -56,7 +59,7 @@ public class FilmDBStorage implements FilmStorage {
         final String sqlQuery = "select F.FILM_ID, F.FILM_NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, F.MPA_ID, MPA.NAME_MPA " +
                 "from FILMS as F " +
                 "left join MPA on F.MPA_ID = MPA.MPA_ID";
-        List<Film> films = jdbcOperations.query(sqlQuery, new FilmRowMapper());
+        List<Film> films = jdbcOperations.query(sqlQuery, filmRowMapper);
         loadFilmsGenre(films);
         return films;
     }
@@ -69,7 +72,7 @@ public class FilmDBStorage implements FilmStorage {
                 "left join MPA on F.MPA_ID = MPA.MPA_ID " +
                 "where F.FILM_ID = :filmId";
         final List<Film> films = jdbcOperations.query(sqlQuery,
-                Map.of("filmId", filmId), new FilmRowMapper());
+                Map.of("filmId", filmId), filmRowMapper);
         if (films.size() != 1) return null;
         final String sqlGenreQuery = "select G.GENRE_ID, G.GENRE_NAME " +
                 "from GENRE as G " +
@@ -107,7 +110,7 @@ public class FilmDBStorage implements FilmStorage {
                 "left join MPA on F.MPA_ID = MPA.MPA_ID " +
                 "group by F.FILM_ID  " +
                 "order by COUNT(FL.USER_ID) desc limit :count";
-        List<Film> films = jdbcOperations.query(sqlQuery, Map.of("count", count), new FilmRowMapper());
+        List<Film> films = jdbcOperations.query(sqlQuery, Map.of("count", count), filmRowMapper);
         loadFilmsGenre(films);
         return films;
     }
@@ -143,7 +146,7 @@ public class FilmDBStorage implements FilmStorage {
     }
 
     private void loadFilmsGenre(List<Film> films) {
-        List<Long> filmsId = films.stream().map(Film::getId).collect(Collectors.toList());
+        final List<Long> filmsId = films.stream().map(Film::getId).collect(Collectors.toList());
         final Map<Long, Film> filmMap = films.stream()
                 .collect(Collectors.toMap(Film::getId, film -> film, (a, b) -> b));
         final String sqlQuery = "select FG.FILM_ID, FG.GENRE_ID, G.GENRE_NAME " +
@@ -151,7 +154,7 @@ public class FilmDBStorage implements FilmStorage {
                 "left join GENRE as G on FG.GENRE_ID = G.GENRE_ID " +
                 "WHERE film_id in (:filmsId)";
         final List<FilmGenre> genreMaps = jdbcOperations.query(sqlQuery,
-                Map.of("filmsId", filmsId), new FilmGenreRowMapper());
+                Map.of("filmsId", filmsId), filmGenreRowMapper);
         for (FilmGenre filmGenre : genreMaps) {
             filmMap.get(filmGenre.getFilmId()).getGenres().add(filmGenre.getGenre());
         }

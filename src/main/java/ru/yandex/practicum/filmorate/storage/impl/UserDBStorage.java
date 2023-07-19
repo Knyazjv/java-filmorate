@@ -18,6 +18,7 @@ import java.util.Objects;
 @Repository
 public class UserDBStorage implements UserStorage {
     private final NamedParameterJdbcOperations jdbcOperations;
+    private final UserRowMapper userRowMapper = new UserRowMapper();
 
     public UserDBStorage(NamedParameterJdbcOperations jdbcOperations) {
         this.jdbcOperations = jdbcOperations;
@@ -25,7 +26,7 @@ public class UserDBStorage implements UserStorage {
 
     @Override
     public User createUser(User user) {
-        String sqlQuery = "insert into USERS (EMAIL, LOGIN, USER_NAME, BIRTHDAY) " +
+        final String sqlQuery = "insert into USERS (EMAIL, LOGIN, USER_NAME, BIRTHDAY) " +
                 "values (:email, :login, :name, :birthday)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcOperations.update(sqlQuery, getMapParameter(user, true), keyHolder);
@@ -36,7 +37,7 @@ public class UserDBStorage implements UserStorage {
     @Override
     public User updateUser(User user) {
         if (getUserById(user.getId()) == null) return null;
-        String sqlQuery = "update USERS SET EMAIL = :email, LOGIN = :login, USER_NAME = :name, BIRTHDAY = :birthday " +
+        final String sqlQuery = "update USERS SET EMAIL = :email, LOGIN = :login, USER_NAME = :name, BIRTHDAY = :birthday " +
                 "where USER_ID = :userId";
         jdbcOperations.update(sqlQuery, getMapParameter(user, false));
         return user;
@@ -45,7 +46,7 @@ public class UserDBStorage implements UserStorage {
     @Override
     public List<User> getAllUsers() {
         final String sqlQuery = "select USER_ID, LOGIN, BIRTHDAY, EMAIL, USER_NAME from USERS";
-        return jdbcOperations.query(sqlQuery, new UserRowMapper());
+        return jdbcOperations.query(sqlQuery, userRowMapper);
     }
 
     @Override
@@ -53,7 +54,7 @@ public class UserDBStorage implements UserStorage {
         final String sqlQuery = "select USER_ID, LOGIN, BIRTHDAY, EMAIL, USER_NAME " +
                 "from USERS " +
                 "where USER_ID = :userId ";
-        final List<User> users = jdbcOperations.query(sqlQuery, Map.of("userId", userId), new UserRowMapper());
+        final List<User> users = jdbcOperations.query(sqlQuery, Map.of("userId", userId), userRowMapper);
 
         if (users.size() != 1) {
             return null;
@@ -84,7 +85,7 @@ public class UserDBStorage implements UserStorage {
                 "from USERS where USER_ID in " +
                 "(select FRIEND_ID " +
                 "from STATUS_FRIEND where USER_ID = :userId)";
-        return jdbcOperations.query(sqlQuery, Map.of("userId", userId), new UserRowMapper());
+        return jdbcOperations.query(sqlQuery, Map.of("userId", userId), userRowMapper);
     }
 
     @Override
@@ -97,7 +98,7 @@ public class UserDBStorage implements UserStorage {
                 "where SF1.USER_ID = :userId and SF2.USER_ID = :otherId)";
         return jdbcOperations.query(sqlQuery,
                 Map.of("userId", userId, "otherId", otherId),
-                new UserRowMapper());
+                userRowMapper);
     }
 
     private MapSqlParameterSource getMapParameter(User user, boolean isCreate) {

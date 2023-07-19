@@ -29,10 +29,9 @@ public class GenreServiceImpl implements GenreService {
     public Genre getGenreById(Long genreId) {
         Genre genre = genreRepository.getGenreById(genreId);
         if (genre == null) {
-            log.warn("Error");
-            log.warn("genreId: " + genreId + " жанр не найден.");
+            log.debug("genreId={} не найден", genreId);
             throw new NotFoundException("Жанр не найден.");
         }
-        return genreRepository.getGenreById(genreId);
+        return genre;
     }
 }

@@ -15,6 +15,7 @@ import java.util.Map;
 public class GenreDBStorage implements GenreStorage {
 
     private final NamedParameterJdbcOperations jdbcOperations;
+    private final GenreRowMapper genreRowMapper = new GenreRowMapper();
 
     public GenreDBStorage(NamedParameterJdbcOperations jdbcOperations) {
         this.jdbcOperations = jdbcOperations;
@@ -23,7 +24,7 @@ public class GenreDBStorage implements GenreStorage {
     @Override
     public List<Genre> getAllGenre() {
         final String sqlQuery = "select GENRE_ID, GENRE_NAME from GENRE";
-        return jdbcOperations.query(sqlQuery, new GenreRowMapper());
+        return jdbcOperations.query(sqlQuery, genreRowMapper);
     }
 
     @Override
@@ -32,7 +33,7 @@ public class GenreDBStorage implements GenreStorage {
                 "from GENRE " +
                 "where GENRE_ID = :genreId";
         final List<Genre> genres = jdbcOperations.query(sqlGenreQuery,
-                Map.of("genreId", genreId), new GenreRowMapper());
+                Map.of("genreId", genreId), genreRowMapper);
         if (genres.size() != 1) return null;
         return genres.get(0);
     }

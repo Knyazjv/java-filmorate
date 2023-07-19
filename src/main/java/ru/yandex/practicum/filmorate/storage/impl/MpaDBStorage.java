@@ -16,6 +16,7 @@ import java.util.Map;
 public class MpaDBStorage implements MpaStorage {
 
     private final NamedParameterJdbcOperations jdbcOperations;
+    private final MpaRowMapper mpaRowMapper = new MpaRowMapper();
 
     public MpaDBStorage(NamedParameterJdbcOperations jdbcOperations) {
         this.jdbcOperations = jdbcOperations;
@@ -24,14 +25,14 @@ public class MpaDBStorage implements MpaStorage {
     @Override
     public List<Mpa> getAllMpa() {
         final String sqlQuery = "select MPA_ID, NAME_MPA from MPA";
-        return jdbcOperations.query(sqlQuery, new MpaRowMapper());
+        return jdbcOperations.query(sqlQuery, mpaRowMapper);
     }
 
     @Override
     public Mpa getMpaById(Long mpaId) {
         final String sqlQuery = "select MPA_ID, NAME_MPA from MPA where MPA_ID = :mpaId";
         final List<Mpa> mpas = jdbcOperations.query(sqlQuery,
-                Map.of("mpaId", mpaId), new MpaRowMapper());
+                Map.of("mpaId", mpaId), mpaRowMapper);
         if (mpas.size() != 1) return null;
         return mpas.get(0);
     }

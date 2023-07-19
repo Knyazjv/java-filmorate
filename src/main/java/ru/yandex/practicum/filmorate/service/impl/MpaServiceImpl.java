@@ -30,8 +30,7 @@ public class MpaServiceImpl implements MpaService {
     public Mpa getMpaById(Long mpaId) {
         Mpa mpa = mpaRepository.getMpaById(mpaId);
         if (mpa == null) {
-            log.warn("Error");
-            log.warn("mpaId: " + mpaId + " рейтинг не найден.");
+            log.warn("mpaId={} не найден", mpaId);
             throw new NotFoundException("Рейтинг не найден.");
         }
         return mpa;
