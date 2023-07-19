@@ -18,6 +18,7 @@ class GenreDBStorageTest {
 
     @Autowired
     private GenreStorage genreStorage;
+
     @Test
     void getAllGenre() {
         List<String> names = new ArrayList<>();
@@ -27,7 +28,7 @@ class GenreDBStorageTest {
         names.add("Триллер");
         names.add("Документальный");
         names.add("Боевик");
-        List<Genre> genreList =genreStorage.getAllGenre();
+        List<Genre> genreList = genreStorage.getAllGenre();
         for (int i = 0; i < names.size(); i++) {
             equalsGenre(i + 1, names.get(i), genreList.get(i));
         }
