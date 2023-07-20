@@ -9,18 +9,16 @@ import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.service.ValidatorUser;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
 @Slf4j
-public class InMemoryUserService implements UserService {
+public class UserServiceImpl implements UserService {
     private final UserStorage userRepository;
 
     @Autowired
-    public InMemoryUserService(UserStorage userRepository) {
+    public UserServiceImpl(UserStorage userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -64,32 +62,21 @@ public class InMemoryUserService implements UserService {
 
     @Override
     public List<User> getFriend(Long userId) {
-        User user;
-        List<User> friends = new ArrayList<>();
-
         validatorId(userId);
-        List<Long> friendIds = userRepository.getFriends(userId);
-        for (Long idFriend : friendIds) {
-            user = userRepository.getUserById(idFriend);
-            if (user != null) friends.add(user);
-        }
-        return friends;
+        return userRepository.getFriends(userId);
     }
 
     @Override
     public List<User> getListOfMutualFriends(Long userId, Long otherId) {
         validatorId(userId);
         validatorId(otherId);
-        return userRepository.getListOfMutualFriends(userId, otherId).stream()
-                .map(userRepository::getUserById)
-                .collect(Collectors.toList());
+        return userRepository.getListOfMutualFriends(userId, otherId);
     }
 
     private void validatorId(Long userId) {
         User user = userRepository.getUserById(userId);
         if (user == null) {
-            log.warn("Error");
-            log.warn("userId: " + userId);
+            log.warn("userId={} не найден", userId);
             throw new NotFoundException("Пользователь не найден");
         }
     }

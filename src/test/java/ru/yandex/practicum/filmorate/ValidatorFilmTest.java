@@ -4,10 +4,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.service.ValidatorFilm;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -23,59 +25,59 @@ class ValidatorFilmTest {
 
     @Test
     void shouldThrowExceptionNameFilmIsEmpty() {
-        Film film = new Film(1L, "", "description", LocalDate.now(), 123);
+        Film film = new Film(1L, "", "description", LocalDate.now(), 123, new Mpa(1L, "name"), new HashSet<>());
         assertEquals(THE_NAME_CANNOT_BE_EMPTY, validation(film).getMessage());
     }
 
     @Test
     void shouldThrowExceptionNameFilmIsNull() {
-        Film film = new Film(1L, null, "description", LocalDate.now(), 123);
+        Film film = new Film(1L, null, "description", LocalDate.now(), 123, new Mpa(1L, "name"), new HashSet<>());
         assertEquals(THE_NAME_CANNOT_BE_EMPTY, validation(film).getMessage());
     }
 
     @Test
     void nameFilmIsNotNullAndEmpty() {
-        Film film = new Film(1L, "name", "description", LocalDate.now(), 123);
+        Film film = new Film(1L, "name", "description", LocalDate.now(), 123, new Mpa(1L, "name"), new HashSet<>());
         ValidatorFilm.validateFilm(film);
     }
 
     @Test
     void shouldThrowExceptionDescriptionLength201() {
-        Film film = new Film(1L, "name", DESCRIPTION_LENGTH_200 + "1", LocalDate.now(), 123);
+        Film film = new Film(1L, "name", DESCRIPTION_LENGTH_200 + "1", LocalDate.now(), 123, new Mpa(1L, "name"), new HashSet<>());
         assertEquals(MAX_DESCRIPTION, validation(film).getMessage());
     }
 
     @Test
     void descriptionLength200() {
-        Film film = new Film(1L, "name", DESCRIPTION_LENGTH_200, LocalDate.now(), 123);
+        Film film = new Film(1L, "name", DESCRIPTION_LENGTH_200, LocalDate.now(), 123, new Mpa(1L, "name"), new HashSet<>());
         ValidatorFilm.validateFilm(film);
     }
 
     @Test
     void shouldThrowExceptionReleaseDateBeforeBeginningOfCinema() {
         Film film = new Film(1L, "name", "description", LocalDate.of(1895, Month.DECEMBER,
-                27), 123);
+                27), 123, new Mpa(1L, "name"), new HashSet<>());
         assertEquals(DATE_BEFORE_BEGINNING_OF_CINEMA, validation(film).getMessage());
     }
 
     @Test
     void releaseDateAfterBeginningOfCinema() {
         Film film = new Film(1L, "name", "description", LocalDate.of(1895, Month.DECEMBER,
-                29), 123);
+                29), 123, new Mpa(1L, "name"), new HashSet<>());
         ValidatorFilm.validateFilm(film);
     }
 
     @Test
     void shouldThrowExceptionDurationIsNegative() {
-        Film film = new Film(1L, "name", "description", LocalDate.now(), 0);
+        Film film = new Film(1L, "name", "description", LocalDate.now(), 0, new Mpa(1L, "name"), new HashSet<>());
         assertEquals(DURATION_OF_THE_FILM_IS_POSITIVE, validation(film).getMessage());
-        Film film1 = new Film(1L, "name", "description", LocalDate.now(), -1);
+        Film film1 = new Film(1L, "name", "description", LocalDate.now(), -1, new Mpa(1L, "name"), new HashSet<>());
         assertEquals(DURATION_OF_THE_FILM_IS_POSITIVE, validation(film1).getMessage());
     }
 
     @Test
     void durationIsPositive() {
-        Film film = new Film(1L, "name", "description", LocalDate.now(), 2);
+        Film film = new Film(1L, "name", "description", LocalDate.now(), 2, new Mpa(1L, "name"), new HashSet<>());
         ValidatorFilm.validateFilm(film);
     }
 
